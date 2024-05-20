@@ -160,6 +160,7 @@ public class OpenXmlSpreadsheetGeneratorTests
             .RuleFor(i => i.Fixed0, f => f.Random.Decimal(0, 100))
             .RuleFor(i => i.Fixed1, f => f.Random.Decimal(0, 100))
             .RuleFor(i => i.Fixed2, f => f.Random.Decimal(0, 100))
+            .RuleFor(i => i.Fixed3, f=> f.Random.Decimal(0, 100))
     ;
 
     private static Faker<DifferentTestExportRecord> GetDifferentTestExportRecordFaker() =>
@@ -264,6 +265,29 @@ public class OpenXmlSpreadsheetGeneratorTests
         var sheetPath = Path.Join(Path.GetTempPath(), $"createsingleworksheet_should_work_{DateTime.Now:yyyyMMddHHmmssfff}.xlsx");
         File.WriteAllBytes(sheetPath, result);
         ValidateExportedSheet(ms, 1, testData);
+    }
+    
+    [Fact]
+    public void CreateSingleWorksheet_With_Formula()
+    {
+        using var ms = new MemoryStream();
+        var testData = new List<SampleExportRecordWithFormula>()
+        {
+            new() { RecordTitle = "test record 1", RecordAmount = 10, RecordSize = 444 },
+            new() { RecordTitle = "test record 2", RecordAmount = 20, RecordSize = 5 },
+            new() { RecordTitle = "test record 3", RecordAmount = 30, RecordSize = 67 },
+            new() { RecordTitle = "test record 4", RecordAmount = 3, RecordSize = 477 },
+        };
+
+        _spreadsheetGenerator.CreateSingleSheetSpreadsheet(ms, new SpreadsheetConfiguration<SampleExportRecordWithFormula>
+        {
+            WorksheetName = "Test Sheet",
+            AutoSizeColumns = true,
+            ExportData = testData
+        });
+        
+        ms.Seek(0, SeekOrigin.Begin);
+        ms.Should().NotHaveLength(0);
     }
 
     /*

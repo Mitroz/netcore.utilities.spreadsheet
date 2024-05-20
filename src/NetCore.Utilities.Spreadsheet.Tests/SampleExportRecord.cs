@@ -92,6 +92,10 @@ public class TestExportRecord
     [SpreadsheetColumn(displayName: "Fixed2", format: ColumnFormats.Fixed2)]
     [SpreadsheetImportColumn(19)]
     public decimal Fixed2 { get; set; }
+
+    [SpreadsheetColumn(displayName: "Fixed3", format: ColumnFormats.Fixed3)]
+    [SpreadsheetImportColumn(20)]
+    public decimal Fixed3 { get; set; }
 }
 
 public class DifferentTestExportRecord
@@ -118,4 +122,16 @@ public class LocalizedSampleExportRecord
 {
     [SpreadsheetColumn(ResourceFileType = typeof(TestResources), ResourceKey = nameof(TestResources.LocalizedColumn))]
     public string? RecordTitle { get; set; }
+}
+
+public class SampleExportRecordWithFormula
+{
+    [DisplayName("Title")]
+    public string? RecordTitle { get; set; }
+
+    [SpreadsheetColumn("Amount", Formula = "SUM")]
+    public decimal RecordAmount { get; set; }
+    
+    [SpreadsheetColumn("Size", Formula = "MAX")]
+    public decimal RecordSize { get; set; }
 }
